@@ -1,0 +1,165 @@
+/* ============================================================================
+   21MONTEIRO — PÁGINAS LEGAIS
+   Política de Privacidade e Política de Cookies.
+   ========================================================================== */
+
+.legal {
+  padding-block: calc(var(--header-h) + clamp(3rem, 7vw, 5rem)) var(--secao-y);
+  position: relative;
+}
+
+/* Halo sutil no topo, para a página não começar "chapada" */
+.legal::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 420px;
+  background: radial-gradient(70% 100% at 50% 0%, rgba(255, 126, 0, .1), transparent 70%);
+  pointer-events: none;
+}
+
+.legal-inner {
+  width: min(100% - (var(--gutter) * 2), 760px);
+  margin-inline: auto;
+  position: relative;
+}
+
+.legal-cabecalho {
+  padding-bottom: 2rem;
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid var(--borda);
+}
+
+.legal-cabecalho h1 {
+  font-size: var(--t-2xl);
+  margin-bottom: .75rem;
+}
+
+.legal-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .375rem 1.5rem;
+  color: var(--texto-fraco);
+  font-size: var(--t-sm);
+}
+
+/* ---- CORPO DO TEXTO ------------------------------------------------------ */
+.legal-corpo { color: var(--texto-suave); }
+
+.legal-corpo > * + * { margin-top: 1.25rem; }
+
+.legal-corpo h2 {
+  font-size: var(--t-xl);
+  color: var(--texto);
+  margin-top: 3rem;
+  padding-top: .25rem;
+  scroll-margin-top: calc(var(--header-h) + 2rem);
+}
+
+.legal-corpo h2:first-child { margin-top: 0; }
+
+.legal-corpo h2 .numero {
+  color: var(--laranja-cl);
+  font-family: var(--fonte-display);
+  margin-right: .5rem;
+}
+
+.legal-corpo p { line-height: 1.75; }
+
+.legal-corpo strong { color: var(--texto); font-weight: 600; }
+
+.legal-corpo a {
+  color: var(--laranja-cl);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.legal-corpo a:hover { color: var(--ambar); }
+
+.legal-corpo ul {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  padding-left: 0;
+}
+
+.legal-corpo li {
+  position: relative;
+  padding-left: 1.75rem;
+  line-height: 1.7;
+}
+
+.legal-corpo li::before {
+  content: "";
+  position: absolute;
+  left: .375rem;
+  top: .7em;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gradiente-marca);
+}
+
+/* Bloco de destaque (contato, aviso) */
+.legal-destaque {
+  padding: 1.5rem;
+  background: var(--superficie);
+  border: 1px solid var(--borda);
+  border-left: 3px solid var(--laranja);
+  border-radius: var(--raio-sm);
+}
+
+.legal-destaque p { margin: 0; }
+
+/* ---- NAVEGAÇÃO DE RODAPÉ ------------------------------------------------- */
+.legal-voltar {
+  margin-top: 3.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--borda);
+  display: flex;
+  flex-wrap: wrap;
+  gap: .875rem;
+}
+
+/* ---- ÍNDICE LATERAL (desktop) -------------------------------------------- */
+.legal-indice {
+  display: none;
+}
+
+@media (min-width: 1180px) {
+  .legal-indice {
+    display: block;
+    position: fixed;
+    top: calc(var(--header-h) + 5rem);
+    left: max(1.5rem, calc(50vw - 620px));
+    width: 200px;
+    font-size: var(--t-xs);
+  }
+
+  .legal-indice h2 {
+    font-size: var(--t-xs);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--texto-fraco);
+    margin-bottom: 1rem;
+  }
+
+  .legal-indice ol {
+    display: flex;
+    flex-direction: column;
+    gap: .625rem;
+    counter-reset: item;
+  }
+
+  .legal-indice a {
+    color: var(--texto-fraco);
+    line-height: 1.4;
+    display: block;
+    transition: color var(--transicao), transform var(--transicao);
+  }
+
+  .legal-indice a:hover {
+    color: var(--laranja-cl);
+    transform: translateX(3px);
+  }
+}
