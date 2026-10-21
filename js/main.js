@@ -33,7 +33,9 @@
     check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>',
     estrela: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m12 2 2.9 6.26 6.6.78-4.9 4.6 1.3 6.6L12 17.1 6.1 20.24l1.3-6.6-4.9-4.6 6.6-.78z"/></svg>',
     lupa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M11 8v6M8 11h6"/></svg>',
-    fechar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>'
+    fechar: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+    telaDesktop: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4" width="19" height="12.5" rx="2"/><path d="M9 20h6M12 16.5V20"/></svg>',
+    telaCelular: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>'
   };
 
   /* ---- HELPERS ----------------------------------------------------------- */
@@ -273,13 +275,17 @@
           <button class="projeto-midia" type="button" data-lightbox="${i}"
                   aria-label="Ver a página completa do projeto ${escapar(p.titulo)} para ${escapar(p.cliente)}">
             <span class="projeto-tag">${escapar(p.categoria)}</span>
-            <img src="${escapar(p.imagem)}" alt="Mockup do site da ${escapar(p.cliente)} em um notebook" loading="lazy">
+            <picture>
+              ${p.imagemMobile ? `<source media="(max-width: 767px)" srcset="${escapar(p.imagemMobile)}">` : ""}
+              <img src="${escapar(p.imagem)}" alt="Site da ${escapar(p.cliente)} em um mockup" loading="lazy">
+            </picture>
             <span class="projeto-lupa">${ICONES.lupa}<span>Ver página completa</span></span>
           </button>
           <div class="projeto-corpo">
             <span class="projeto-cliente">${escapar(p.cliente)}</span>
             <h3>${escapar(p.titulo)}</h3>
             <p>${escapar(p.descricao)}</p>
+            ${p.credito ? `<p class="projeto-credito">${escapar(p.credito)}</p>` : ""}
             <div class="projeto-acoes">
               <button class="projeto-link" type="button" data-lightbox="${i}">
                 Ver página completa ${ICONES.lupa}
@@ -404,6 +410,14 @@
         </div>
         <footer class="lightbox-rodape">
           <span class="lightbox-dica">Role para ver a página inteira</span>
+          <div class="lightbox-vista" role="group" aria-label="Versão do site">
+            <button class="lightbox-vista-btn" type="button" data-vista="desktop" aria-pressed="true">
+              ${ICONES.telaDesktop}<span>Desktop</span>
+            </button>
+            <button class="lightbox-vista-btn" type="button" data-vista="mobile" aria-pressed="false">
+              ${ICONES.telaCelular}<span>Celular</span>
+            </button>
+          </div>
           <a class="btn btn-primario lightbox-cta" href="#">Quero um site assim</a>
         </footer>
       </div>
@@ -416,6 +430,30 @@
     const elRolagem  = $(".lightbox-rolagem", caixa);
     const elCta      = $(".lightbox-cta", caixa);
     const btnFechar  = $(".lightbox-fechar", caixa);
+    const elVista    = $(".lightbox-vista", caixa);
+
+    /* Qual versão do print está na tela: "desktop" ou "mobile". O mesmo
+       projeto tem as duas, e o rodapé deixa trocar sem fechar nada. Projeto
+       sem print de celular esconde o seletor e fica só no desktop. */
+    let vista = "desktop";
+
+    function aplicarVista() {
+      const p = DADOS.projetos[indice];
+      const temCelular = Boolean(p.completaMobile);
+      elVista.hidden = !temCelular;
+      if (!temCelular) vista = "desktop";
+
+      const mobile = vista === "mobile";
+      elImg.src = (mobile && p.completaMobile) || p.completa || p.imagem;
+      elImg.alt = `Página completa do projeto ${p.titulo} para ${p.cliente}` +
+                  (mobile ? ", na versão de celular" : "");
+      elImg.classList.toggle("lightbox-img-mobile", mobile);
+      elRolagem.scrollTop = 0;
+
+      $$(".lightbox-vista-btn", caixa).forEach((b) => {
+        b.setAttribute("aria-pressed", String(b.dataset.vista === vista));
+      });
+    }
 
     function mostrar(i) {
       const total = DADOS.projetos.length;
@@ -424,9 +462,8 @@
 
       elCliente.textContent = p.cliente;
       elTitulo.textContent  = p.titulo;
-      elImg.src = p.completa || p.imagem;
-      elImg.alt = `Página completa do projeto ${p.titulo} para ${p.cliente}`;
-      elRolagem.scrollTop = 0;
+
+      aplicarVista();
 
       elCta.href = linkZap(
         DADOS.contato.whatsapp,
@@ -438,6 +475,10 @@
 
     function abrir(i) {
       focoAnterior = document.activeElement;
+      // Quem chega pelo celular vê primeiro a versão de celular, que é a que
+      // importa para ela. No desktop começa no desktop. Dos dois lados o
+      // seletor continua lá para trocar.
+      vista = window.matchMedia("(max-width: 767px)").matches ? "mobile" : "desktop";
       mostrar(i);
       caixa.hidden = false;
       // Força um frame antes da classe, para a transição acontecer
@@ -462,6 +503,8 @@
 
     caixa.addEventListener("click", (e) => {
       if (e.target.closest("[data-fechar]")) { fechar(); return; }
+      const troca = e.target.closest("[data-vista]");
+      if (troca) { vista = troca.dataset.vista; aplicarVista(); return; }
       const nav = e.target.closest("[data-navegar]");
       if (nav) mostrar(indice + Number(nav.dataset.navegar));
     });

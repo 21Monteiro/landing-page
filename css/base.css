@@ -11,6 +11,14 @@
   font-display: swap;
 }
 
+/* Mesmo problema da Augustus: o "?" da Meditative é ornamental e, em
+   tamanho de título, parece um caractere errado. Desviamos só ele. */
+@font-face {
+  font-family: "Meditative";
+  src: local("Inter"), local("Segoe UI"), local("Helvetica Neue"), local("Arial");
+  unicode-range: U+003F, U+00BF;
+}
+
 /* ---- TOKENS -------------------------------------------------------------- */
 :root {
   /* Cores da marca */

@@ -393,6 +393,15 @@
 .projeto-midia:focus-visible .projeto-lupa { opacity: 1; }
 .projeto-midia:hover .projeto-lupa svg { transform: scale(1); }
 
+/* O <picture> existe só para trocar o mockup de notebook pelo de celular
+   em telas pequenas. Ele precisa ocupar a mídia inteira, senão o <img>
+   dentro dele não tem altura para preencher. */
+.projeto-midia picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .projeto-midia img {
   width: 100%; height: 100%;
   object-fit: contain;
@@ -439,6 +448,31 @@
   font-size: var(--t-sm);
   line-height: 1.6;
   flex: 1;
+}
+
+/* Crédito da agência: existe para dar contexto, não para competir com a
+   descrição. Por isso não cresce junto com ela nem puxa o olho. */
+.projeto-corpo .projeto-credito {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: .4375rem;
+  padding: .25rem .625rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-full);
+  font-size: var(--t-xs);
+  line-height: 1.4;
+  color: var(--texto-fraco);
+}
+
+.projeto-credito::before {
+  content: "";
+  width: .3125rem;
+  height: .3125rem;
+  border-radius: 50%;
+  background: var(--laranja-cl);
+  opacity: .7;
 }
 
 .projeto-acoes {
@@ -729,6 +763,13 @@
   display: block;
 }
 
+/* O print de celular tem 780px de largura. Esticado na largura do painel ele
+   apareceria ampliado e borrado, então fica na largura de um aparelho. */
+.lightbox-img-mobile {
+  max-width: min(420px, 100%);
+  margin-inline: auto;
+}
+
 /* ---- Rodapé ---- */
 .lightbox-rodape {
   display: flex;
@@ -749,10 +790,43 @@
 
 .lightbox-cta { padding: .625rem 1.25rem; }
 
+/* ---- Troca entre o print de desktop e o de celular ---- */
+.lightbox-vista {
+  display: inline-flex;
+  padding: .1875rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-full);
+  background: var(--superficie-2);
+}
+
+.lightbox-vista[hidden] { display: none; }
+
+.lightbox-vista-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .375rem;
+  padding: .375rem .75rem;
+  border-radius: var(--raio-full);
+  font-size: var(--t-xs);
+  line-height: 1;
+  color: var(--texto-fraco);
+  transition: color var(--transicao), background var(--transicao);
+}
+
+.lightbox-vista-btn svg { width: 16px; height: 16px; }
+.lightbox-vista-btn:hover { color: var(--branco); }
+
+.lightbox-vista-btn[aria-pressed="true"] {
+  color: var(--navy-900);
+  background: var(--gradiente-marca);
+}
+
 @media (max-width: 560px) {
   .lightbox-painel { width: 100%; max-height: 100%; }
   .lightbox-rodape { justify-content: center; }
   .lightbox-cta { width: 100%; }
+  /* Com o seletor no rodapé não sobra linha para a dica de rolagem. */
+  .lightbox-dica { display: none; }
 }
 
 /* ============================================================================
@@ -769,6 +843,18 @@
   src: url("/assets/fonts/augustus.ttf") format("truetype");
   font-weight: 400;
   font-display: swap;
+}
+
+/* O "?" da Augustus é um glifo ornamental, com a volta virada para o lado
+   errado: em um título grande ele parece um caractere quebrado. Esta face
+   desvia só esse caractere (e o "¿") para uma fonte de texto comum. Como
+   vem depois da declaração acima, ela vence para o intervalo que cobre.
+   Se nenhuma das locais existir, a face é inválida e o navegador cai na
+   próxima família da pilha — que também desenha um "?" normal. */
+@font-face {
+  font-family: "Augustus";
+  src: local("Inter"), local("Segoe UI"), local("Helvetica Neue"), local("Arial");
+  unicode-range: U+003F, U+00BF;
 }
 
 body.marca-apns {
@@ -900,7 +986,7 @@ body.marca-apns {
 .marca-apns .pilares li { align-items: flex-start; }
 .marca-apns .pilares svg { margin-top: 2px; }
 
-/* "resultado." no hero: a Augustus não tem itálico, então o <em>
+/* "trás" no hero: a Augustus não tem itálico, então o <em>
    marca sentido sem inclinar (o navegador simularia uma oblíqua feia). */
 .marca-apns .hero-titulo em {
   font-style: normal;

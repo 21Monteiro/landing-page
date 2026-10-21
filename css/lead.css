@@ -84,32 +84,87 @@
   line-height: 1.6;
 }
 
-/* ---- CAMPOS --------------------------------------------------------------- */
+/* ---- ETAPAS --------------------------------------------------------------- *
+   Uma pergunta por vez. O <fieldset> escondido some de verdade (hidden), não
+   só da vista: assim ele sai da ordem de tabulação e do leitor de tela.
+   -------------------------------------------------------------------------- */
+.lead-progresso {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-top: 1.25rem;
+}
+
+.lead-barra {
+  flex: 1;
+  height: 4px;
+  border-radius: var(--raio-full);
+  background: rgba(255, 255, 255, .09);
+  overflow: hidden;
+}
+
+.lead-barra-cheia {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--gradiente-marca);
+  transition: width 320ms cubic-bezier(.22, 1, .36, 1);
+}
+
+.lead-contador {
+  font-size: var(--t-xs);
+  color: var(--texto-fraco);
+  font-variant-numeric: tabular-nums;
+}
+
 .lead-form { display: flex; flex-direction: column; gap: 1.125rem; }
 
-.lead-campo { display: flex; flex-direction: column; gap: .4375rem; }
+/* Altura mínima para o painel não pular a cada troca de pergunta. */
+.lead-corpo { min-height: 190px; }
 
-.lead-campo label {
-  font-size: var(--t-sm);
+.lead-passo {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.lead-passo[hidden] { display: none; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .lead-passo { animation: lead-entra 260ms cubic-bezier(.22, 1, .36, 1); }
+}
+
+@keyframes lead-entra {
+  from { opacity: 0; transform: translateX(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.lead-pergunta {
+  padding: 0;
+  font-size: var(--t-md);
   font-weight: 600;
   color: var(--texto);
 }
 
-.lead-campo label span {
+.lead-pergunta span {
   font-weight: 400;
   color: var(--texto-fraco);
 }
 
-.lead-campo input,
-.lead-campo select,
-.lead-campo textarea {
+/* ---- CAMPOS DE TEXTO ------------------------------------------------------ */
+.lead-passo input[type="text"],
+.lead-passo input[type="tel"],
+.lead-passo textarea {
   width: 100%;
   padding: .8125rem 1rem;
   background: rgba(255, 255, 255, .045);
   border: 1px solid var(--borda);
   border-radius: var(--raio-sm);
   color: var(--texto);
-  font-size: var(--t-sm);
   font-family: inherit;
   transition: border-color var(--transicao), background var(--transicao),
               box-shadow var(--transicao);
@@ -117,39 +172,86 @@
   font-size: max(16px, var(--t-sm));
 }
 
-.lead-campo textarea { resize: vertical; min-height: 68px; line-height: 1.5; }
+.lead-passo textarea { resize: vertical; min-height: 84px; line-height: 1.5; }
 
-.lead-campo input::placeholder,
-.lead-campo textarea::placeholder { color: var(--texto-fraco); }
+.lead-passo input::placeholder,
+.lead-passo textarea::placeholder { color: var(--texto-fraco); }
 
-.lead-campo input:focus,
-.lead-campo select:focus,
-.lead-campo textarea:focus {
+.lead-passo input:focus,
+.lead-passo textarea:focus {
   outline: none;
   border-color: rgba(255, 126, 0, .6);
   background: rgba(255, 255, 255, .07);
   box-shadow: 0 0 0 3px rgba(255, 126, 0, .13);
 }
 
-.lead-campo [aria-invalid="true"] {
+.lead-passo [aria-invalid="true"] {
   border-color: rgba(255, 90, 90, .65);
   background: rgba(255, 90, 90, .06);
 }
 
-/* Seta própria no select, já que a nativa não acompanha o tema escuro */
-.lead-campo select {
-  appearance: none;
-  -webkit-appearance: none;
+/* ---- RESPOSTAS DE ESCOLHA ------------------------------------------------- *
+   O rádio continua lá, só fica invisível: é ele que dá seta do teclado e
+   leitura correta de "opção 2 de 5". O visual é todo do <label>.
+   -------------------------------------------------------------------------- */
+.lead-opcoes { display: flex; flex-direction: column; gap: .5rem; }
+
+.lead-opcao {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .8125rem 1rem;
+  background: rgba(255, 255, 255, .045);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-sm);
+  color: var(--texto-suave);
+  font-size: max(16px, var(--t-sm));
   cursor: pointer;
-  padding-right: 2.5rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238D97AD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 18px;
+  transition: border-color var(--transicao), background var(--transicao),
+              color var(--transicao);
 }
 
-/* A lista aberta do select é desenhada pelo sistema, não pelo CSS da página */
-.lead-campo select option { background: var(--navy-800); color: #fff; }
+.lead-opcao:hover {
+  border-color: var(--borda-forte);
+  background: rgba(255, 255, 255, .07);
+  color: var(--texto);
+}
+
+/* A bolinha é desenhada antes do texto, e o rádio real fica fora da tela. */
+.lead-opcao input {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.lead-opcao::before {
+  content: "";
+  flex: none;
+  width: 18px; height: 18px;
+  border: 2px solid var(--borda-forte);
+  border-radius: 50%;
+  transition: border-color var(--transicao), box-shadow var(--transicao);
+}
+
+.lead-opcao:has(input:checked) {
+  border-color: rgba(255, 126, 0, .55);
+  background: rgba(255, 126, 0, .09);
+  color: var(--texto);
+}
+
+.lead-opcao:has(input:checked)::before {
+  border-color: var(--laranja);
+  box-shadow: inset 0 0 0 4px var(--laranja);
+}
+
+/* O foco mora no rádio escondido, então a moldura vai no rótulo. */
+.lead-opcao:has(input:focus-visible) {
+  outline: 2px solid var(--laranja-cl);
+  outline-offset: 2px;
+}
 
 .lead-erro {
   font-size: var(--t-xs);
@@ -159,8 +261,35 @@
 
 .lead-erro:empty { min-height: 0; }
 
+/* ---- NAVEGAÇÃO ------------------------------------------------------------ */
+.lead-navegacao {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-top: .375rem;
+}
+
+.lead-navegacao [hidden] { display: none; }
+
+.lead-voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: .375rem;
+  padding: .75rem .875rem;
+  border-radius: var(--raio-sm);
+  font-size: var(--t-sm);
+  color: var(--texto-fraco);
+  transition: color var(--transicao), background var(--transicao);
+}
+
+.lead-voltar:hover { color: var(--texto); background: var(--superficie-2); }
+.lead-voltar svg { width: 16px; height: 16px; }
+
+.lead-continuar { flex: 1; padding-block: 1rem; }
+.lead-continuar svg { width: 18px; height: 18px; }
+
 /* ---- ENVIO ---------------------------------------------------------------- */
-.lead-enviar { margin-top: .375rem; padding-block: 1rem; }
+.lead-enviar { flex: 1; padding-block: 1rem; }
 .lead-enviar svg { width: 20px; height: 20px; }
 .lead-enviar:disabled { opacity: .75; cursor: wait; transform: none; }
 
