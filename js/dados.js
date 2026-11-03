@@ -1,5 +1,5 @@
 /* ============================================================================
-   21MONTEIRO — ARQUIVO DE CONTEÚDO
+   APNS SITES (apenasites.com.br) — ARQUIVO DE CONTEÚDO
    ----------------------------------------------------------------------------
    Este é o ÚNICO arquivo que você precisa editar para atualizar o site.
    Troque textos, links e imagens aqui. O site se monta sozinho.
@@ -49,10 +49,31 @@ const DADOS = {
     ]
   },
 
+  /* ---- RASTREAMENTO (só carrega depois do aceite no banner de cookies) -- *
+   * Cole aqui os IDs DA APNS SITES. Não use os do 21Monteiro: cada site
+   * tem o seu, para as campanhas e o público não se misturarem.
+   *   gtm:   ID do contêiner do Google Tag Manager, ex.: "GTM-ABC1234"
+   *   pixel: ID do Pixel da Meta (Gerenciador de Eventos), só números
+   * Vazio = a ferramenta não carrega. O site funciona normal.
+   * -------------------------------------------------------------------- */
+  rastreamento: {
+    gtm: "",
+    pixel: "",
+    politicaCookies: "/politica-de-cookies/"
+  },
+
+  /* ---- DADOS LEGAIS (aparecem no rodapé e nas políticas) ---------------- */
+  empresa: {
+    nome: "APNS Sites",
+    responsavel: "Vitor da Silva Monteiro",
+    cnpj: "69.586.869/0001-66",
+    cidade: "Bragança Paulista/SP"
+  },
+
   /* ---- CONTATO E REDES -------------------------------------------------- */
   contato: {
     whatsapp: "5511950218840",
-    email: "contato21monteiro@gmail.com",
+    email: "apnssites@gmail.com",
     // São duas contas com propósitos diferentes:
     // "sites" fala de trabalho, "pessoal" fala de vida.
     instagramSites:   "https://www.instagram.com/apenasites/",
@@ -279,65 +300,9 @@ const DADOS = {
    * -------------------------------------------------------------------- */
   depoimentos: [],
 
-  /* ---- LINK BIO — MENU DE DESTINOS -------------------------------------- *
-   * Ordem = prioridade (de cima para baixo na tela).
-   *
-   * Um item pode ser de dois tipos:
-   *   a) COM BANNER  → use "banner". A arte ocupa o card inteiro.
-   *                    O "titulo" vira o texto alternativo (leitores de tela).
-   *   b) SEM BANNER  → usa "icone" + "titulo" + "descricao".
-   *                    Ícones: whatsapp, portfolio, behance, instagram,
-   *                            youtube, site, email
-   *
-   * Banners têm 773x246 (proporção 3,14:1). Mantenha essa proporção
-   * ao criar novos, senão a arte corta.
-   * -------------------------------------------------------------------- */
-  bioLinks: [
-    {
-      banner: "/assets/img/banner-whatsapp.webp",
-      titulo: "Entre em contato via WhatsApp",
-      url: "https://wa.me/5511950218840?text=" + encodeURIComponent("Olá! Vim direto da sua página BIO. Gostaria de saber mais sobre seus serviços.")
-    },
-    {
-      banner: "/assets/img/banner-portfolio.webp",
-      titulo: "Ver meu portfólio de sites",
-      url: "/"
-    },
-    {
-      icone: "instagram",
-      titulo: "@apenasites",
-      descricao: "Os sites que eu crio, e os bastidores deles",
-      url: "https://www.instagram.com/apenasites/"
-    },
-    {
-      icone: "behance",
-      titulo: "Behance",
-      descricao: "Meus projetos de design em detalhe",
-      url: "https://www.behance.net/21monteiro"
-    },
-
-    /* Daqui para baixo o assunto muda: não é mais trabalho, é vida. */
-    {
-      icone: "cerebro",
-      etiqueta: "Curso",
-      titulo: "Reset Mental",
-      descricao: "Para quem está exausto de cabeça e quer voltar a pensar com clareza",
-      url: "https://pay.cakto.com.br/yobiobw_1014216",
-      destaque: true
-    },
-    {
-      icone: "instagram",
-      titulo: "@21monteiro_",
-      descricao: "Desenvolvimento pessoal e outras coisas da vida",
-      url: "https://www.instagram.com/21monteiro_/"
-    },
-    {
-      icone: "youtube",
-      titulo: "YouTube",
-      descricao: "Vídeos sobre cansaço mental e outros nós do dia a dia",
-      url: "https://www.youtube.com/@21Monteiro"
-    }
-  ]
+  /* A página de links (bio) agora mora no site do 21Monteiro:
+     https://21monteiro.com.br/ — por isso não há bioLinks aqui. */
+  bioLinks: []
 };
 
 /* Um `const` no topo de um script clássico NÃO vira propriedade de window

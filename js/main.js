@@ -349,6 +349,13 @@
       if (el.dataset.email === "texto") el.textContent = c.email;
     });
 
+    // Dados legais (nome, CNPJ, cidade) para rodapé e políticas
+    const empresa = DADOS.empresa || {};
+    $$("[data-empresa]").forEach((el) => {
+      const v = empresa[el.dataset.empresa];
+      if (v) el.textContent = v;
+    });
+
     // Redes sociais
     const redes = {
       instagram: c.instagramSites,          // padrão no portfólio: a conta de trabalho

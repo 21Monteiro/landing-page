@@ -1,0 +1,33 @@
+# Lixo que o Windows cria sozinho dentro de pastas de imagem
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# macOS, caso alguém abra o projeto em um Mac
+.DS_Store
+
+# Arquivos de trabalho que não fazem parte do site publicado
+*.psd
+*.ai
+*.eps
+*.zip
+*.wpress
+
+# Caso um dia você use alguma ferramenta de build
+node_modules/
+package-lock.json
+.env
+.env.*
+*.log
+
+# Configuração de editor
+.vscode/
+.idea/
+
+# Script do lado do Google: vive no editor do Apps Script, não no site.
+# Fora do repositório público, o ID da planilha não fica exposto.
+apps-script/
+
+# Mockups do site antigo, guardados só por segurança. Nada aponta para eles.
+assets/img/_antigos/

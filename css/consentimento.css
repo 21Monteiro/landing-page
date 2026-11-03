@@ -1,0 +1,135 @@
+/* ============================================================================
+   BANNER DE CONSENTIMENTO (LGPD)
+   Usa os tokens de base.css, então acompanha a marca da página sozinho.
+   ========================================================================== */
+
+.consentimento {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 90;
+  max-width: 420px;
+  padding: 1.25rem 1.25rem 1rem;
+  border: 1px solid var(--borda-forte);
+  border-radius: var(--raio);
+  background: var(--navy-700);
+  color: var(--texto);
+  box-shadow: var(--sombra);
+  font-size: var(--t-sm);
+  line-height: 1.5;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition: opacity var(--transicao), transform var(--transicao), visibility 0s linear 320ms;
+}
+
+.consentimento.aberto {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity var(--transicao), transform var(--transicao);
+}
+
+.consentimento-titulo {
+  margin: 0 0 .35rem;
+  font-weight: 600;
+  font-size: var(--t-md);
+}
+
+.consentimento-texto {
+  margin: 0 0 1rem;
+  color: var(--texto-suave);
+}
+
+.consentimento-texto a {
+  color: var(--laranja);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.consentimento-opcoes {
+  display: grid;
+  gap: .6rem;
+  margin: 0 0 1rem;
+}
+
+.consentimento-opcoes[hidden] { display: none; }
+
+.consentimento-opcao {
+  display: flex;
+  gap: .7rem;
+  align-items: flex-start;
+  padding: .7rem .8rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-sm);
+  background: var(--superficie);
+  cursor: pointer;
+}
+
+.consentimento-opcao input {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--laranja);
+}
+
+.consentimento-opcao strong {
+  display: block;
+  color: var(--texto);
+}
+
+.consentimento-opcao span { color: var(--texto-suave); }
+
+.consentimento-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.consentimento-btn {
+  flex: 1 1 auto;
+  min-height: 44px;
+  padding: .6rem 1rem;
+  border: 1px solid var(--borda-forte);
+  border-radius: var(--raio-full);
+  background: transparent;
+  color: var(--texto);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transicao), border-color var(--transicao);
+}
+
+.consentimento-btn:hover { background: var(--superficie-2); }
+
+.consentimento-btn.principal {
+  border-color: transparent;
+  background: var(--laranja);
+  color: #1B1B1B;
+}
+
+.consentimento-btn.principal:hover { background: var(--laranja-cl); }
+
+.consentimento-btn.link {
+  flex: 0 0 auto;
+  border-color: transparent;
+  color: var(--texto-suave);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.consentimento-btn[hidden] { display: none; }
+
+.consentimento-btn:focus-visible,
+.consentimento-opcao input:focus-visible {
+  outline: 2px solid var(--laranja);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .consentimento,
+  .consentimento.aberto { transition: none; transform: none; }
+}

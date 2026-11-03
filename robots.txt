@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://apenasites.com.br/sitemap.xml

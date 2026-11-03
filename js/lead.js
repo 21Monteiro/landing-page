@@ -1,5 +1,5 @@
 /* ============================================================================
-   21MONTEIRO — PRÉ-QUALIFICAÇÃO DE LEAD
+   APNS SITES — PRÉ-QUALIFICAÇÃO DE LEAD
    ----------------------------------------------------------------------------
    Todo clique em um botão de WhatsApp abre este formulário. Ao enviar:
      1. os dados vão para a planilha (Apps Script), via sendBeacon
@@ -17,7 +17,7 @@
   const $  = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
 
-  const CHAVE_MEMORIA = "21m_lead";
+  const CHAVE_MEMORIA = "apns_lead";
 
   let caixa = null;      // o <dialog> do formulário
   let contexto = {};     // de qual botão veio o clique
@@ -56,7 +56,9 @@
      último pedaço da barra devolveria vazio. */
   function nomeDaPagina() {
     const p = location.pathname.replace(/index\.html$/, "").replace(/^\/|\/$/g, "");
-    return p || "home";
+    // Os dois sites gravam na mesma planilha: o domínio diz de qual veio
+    const site = location.hostname.replace(/^www\./, "") || "local";
+    return `${site} · ${p || "home"}`;
   }
 
   /* Parâmetros de campanha, para saber de qual anúncio veio o lead */
@@ -539,6 +541,9 @@
     try { janela = window.open("", "_blank"); } catch { /* bloqueado */ }
 
     enviarParaPlanilha(dados);
+
+    // Conversão para o Pixel/GTM (consentimento.js decide se pode registrar)
+    window.dispatchEvent(new CustomEvent("lead:enviado", { detail: dados }));
 
     if (janela && !janela.closed) {
       janela.location.href = url;

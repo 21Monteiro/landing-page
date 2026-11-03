@@ -1,4 +1,4 @@
-# 21Monteiro — Site 2.0
+# APNS Sites — apenasites.com.br
 
 Refação do site WordPress/Elementor em HTML, CSS e JavaScript puros.
 Sem plugins, sem banco de dados, sem dependências externas.
@@ -13,7 +13,7 @@ Para testar como ficará no servidor de verdade (recomendado, porque alguns
 navegadores bloqueiam scripts em arquivos abertos direto do disco):
 
 ```
-cd "04 - Site atualizado"
+cd "apenasites-site"
 python -m http.server 8000
 ```
 
@@ -24,19 +24,20 @@ Depois acesse `http://localhost:8000`.
 ## Estrutura
 
 ```
-04 - Site atualizado/
+apenasites-site/
 ├── index.html                      → Portfólio (página principal)
-├── bio.html                        → Link Bio (menu de destinos)
-├── politica-de-privacidade.html
-├── politica-de-cookies.html
+├── politica-de-privacidade/        → Política de Privacidade (APNS)
+├── politica-de-cookies/            → Política de Cookies (APNS)
+├── CNAME                           → apenasites.com.br (GitHub Pages)
 ├── css/
 │   ├── base.css                    → Cores, fontes, header, rodapé, botões
 │   ├── portfolio.css               → Hero, serviços, projetos, depoimentos
-│   ├── bio.css                     → Página de links
+│   ├── consentimento.css           → Banner de cookies
 │   └── legal.css                   → Páginas de política
 ├── js/
 │   ├── dados.js                    → ★ TODO O CONTEÚDO DO SITE ESTÁ AQUI
 │   ├── main.js                     → Monta as páginas e cuida das interações
+│   ├── consentimento.js            → Banner de cookies + GTM/Pixel
 │   └── carousel.js                 → Carrossel de projetos
 └── assets/
     ├── img/                        → Fotos, logos, mockups
@@ -128,49 +129,9 @@ depoimentos: [],
 
 A seção inteira e o link dela no menu somem sozinhos.
 
-### Link Bio: banners e links de texto
+### Link Bio
 
-Em `bioLinks`, a ordem da lista é a ordem na tela. Cada item pode ser
-de um de dois tipos.
-
-**Com banner** — a arte ocupa o card inteiro, como no site antigo:
-
-```js
-{
-  banner: "assets/img/banner-whatsapp.webp",
-  titulo: "Entre em contato via WhatsApp",  // vira o alt da imagem
-  url: "https://wa.me/..."
-}
-```
-
-**Sem banner** — card de texto com ícone:
-
-```js
-{
-  icone: "behance",                    // whatsapp, portfolio, behance,
-  titulo: "Behance",                   // instagram, youtube, site, email
-  descricao: "Meus projetos em detalhe",
-  url: "https://www.behance.net/21monteiro"
-}
-```
-
-Um item de texto aceita ainda `etiqueta` (selo pequeno ao lado do título,
-ex.: `"Curso"`) e `destaque: true`, que pinta o card com o laranja da marca.
-Use o destaque em **um item só** — se tudo se destaca, nada se destaca.
-
-Hoje a ordem é: banner do WhatsApp, banner do Portfólio, **Reset Mental**
-(card laranja, com ícone de cérebro, indo para o checkout na Cakto) e então
-Behance, Instagram e YouTube como links de texto.
-
-**Para criar um banner novo:** use **773 × 246 px** (proporção 3,14:1),
-a mesma dos atuais. Fora dessa proporção a arte corta nas bordas.
-Os arquivos editáveis estão em `01 - Link Bio/Banners/` (`.psd` e `.png`).
-
-### Trocar a foto de perfil
-
-Substitua `assets/img/foto-bio.webp` (quadrada, 560 px) e
-`assets/img/foto-bio-og.webp` (1200 px, usada no preview quando alguém
-compartilha o link no WhatsApp ou nas redes).
+A página de links agora fica no site do 21Monteiro (21monteiro.com.br).
 
 ---
 
@@ -226,24 +187,46 @@ precisa manter as duas em dia.
 
 ---
 
-## Duas marcas no mesmo site
+## Separação dos sites (2 de novembro de 2026)
 
-| Página | Marca | Paleta |
-|---|---|---|
-| `/` | **APNS Sites** | carvão `#1B1B1B` + creme `#E8DFC9` + laranja `#FF7E00` |
-| `/bio/` | 21Monteiro | azul-marinho `#030B1F` + laranja `#FF7E00` |
-| `/politica-*/` | 21Monteiro | azul-marinho |
+| Site | Domínio | Repositório no GitHub | Conteúdo |
+|---|---|---|---|
+| **APNS Sites** (este) | apenasites.com.br | `21Monteiro/landing-page` | Portfólio + políticas |
+| 21Monteiro | 21monteiro.com.br | `21Monteiro/site` | Só a página de links (bio) + políticas |
 
-O laranja é o mesmo nas duas, o que faz a passagem de uma para a outra
-não parecer um site diferente.
+- E-mail deste site: **apnssites@gmail.com** (`contato.email` em `dados.js`).
+- CNPJ e cidade ficam em `empresa`, no `dados.js`, e aparecem no rodapé.
+- O formulário grava na **mesma planilha** do 21Monteiro. A coluna "Página"
+  começa pelo domínio (`apenasites.com.br · home`), então dá para filtrar.
+- O arquivo `CNAME` diz ao GitHub Pages qual domínio é este. Não apague.
 
-**Como funciona:** o `base.css` continua sendo a identidade 21Monteiro.
-A identidade APNS vive no fim do `portfolio.css`, dentro de
-`body.marca-apns`, que redefine os tokens de cor e fonte. Só o `index.html`
-tem essa classe no `<body>` — por isso a bio e as políticas não mudaram.
+### Banner de cookies e rastreamento
 
-Para aplicar a marca APNS a outra página, basta acrescentar
-`class="marca-apns"` no `<body>` dela e carregar o `portfolio.css`.
+`js/consentimento.js` + `css/consentimento.css`. Nada de Google Tag Manager
+ou Pixel da Meta carrega antes do visitante aceitar no banner.
+
+Os IDs ficam em `dados.js`, bloco `rastreamento`:
+
+```js
+rastreamento: {
+  gtm: "GTM-XXXXXXX",        // Google Tag Manager DA APNS
+  pixel: "123456789012345",  // Pixel da Meta DA APNS
+  politicaCookies: "/politica-de-cookies/"
+}
+```
+
+Vazio = não carrega. Quando um lead é enviado, o site dispara `Lead` no
+Pixel e o evento `gerar_lead` no dataLayer do GTM (só com consentimento).
+Qualquer link com `data-cookies` reabre as preferências.
+
+**Não coloque o Pixel direto no GTM e também aqui**, senão cada visita conta
+duas vezes. Escolha um dos dois caminhos.
+
+### Identidade visual
+
+`base.css` traz os tokens de base; a identidade APNS vive no fim do
+`portfolio.css`, dentro de `body.marca-apns`. Todas as páginas deste site
+(index, políticas, 404) usam essa classe.
 
 ### Tipografia da APNS
 
@@ -304,5 +287,6 @@ e todas as imagens foram extraídos do banco e trazidos para cá.
 É um site estático: sobe em qualquer lugar. Basta enviar a pasta inteira
 para o `public_html` da Hostinger (ou Netlify, Vercel, GitHub Pages).
 
-Antes de subir, troque os endereços de exemplo `https://21monteiro.com.br`
-nas tags `<link rel="canonical">` e `og:` caso o domínio final seja outro.
+Suba o conteúdo desta pasta (não a pasta em si) na raiz do repositório
+`21Monteiro/landing-page`. Canonical, `og:`, `robots.txt` e `sitemap.xml`
+já apontam para `https://apenasites.com.br/`.
