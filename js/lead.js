@@ -527,6 +527,15 @@
       pagina: nomeDaPagina(),
       referencia: document.referrer || "direto",
       enviadoEm: new Date().toISOString(),
+      // Mesmo ID no Pixel (navegador) e na API de Conversões (Apps Script):
+      // a Meta junta os dois e conta o lead uma vez só.
+      eventId: "lead-" + Date.now() + "-" + Math.random().toString(36).slice(2, 10),
+      // A API de Conversões só é chamada se o visitante aceitou marketing
+      consentimentoMarketing: !!(window.CONSENTIMENTO && window.CONSENTIMENTO.marketing),
+      fbp: (document.cookie.match(/(?:^|; )_fbp=([^;]+)/) || [])[1] || "",
+      fbc: (document.cookie.match(/(?:^|; )_fbc=([^;]+)/) || [])[1] || "",
+      urlPagina: location.href.split("#")[0],
+      navegador: navigator.userAgent,
       ...pegarUTMs()
     };
 

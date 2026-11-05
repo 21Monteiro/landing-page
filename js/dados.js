@@ -57,8 +57,8 @@ const DADOS = {
    * Vazio = a ferramenta não carrega. O site funciona normal.
    * -------------------------------------------------------------------- */
   rastreamento: {
-    gtm: "",
-    pixel: "",
+    gtm: "GTM-TN4QDK8L",
+    pixel: "1472882568243160",
     politicaCookies: "/politica-de-cookies/"
   },
 

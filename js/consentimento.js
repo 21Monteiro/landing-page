@@ -45,6 +45,7 @@
   function salvarEscolha(analise, marketing) {
     escolha = { analise: !!analise, marketing: !!marketing, quando: Date.now() };
     try { localStorage.setItem(CHAVE, JSON.stringify(escolha)); } catch { /* sem storage */ }
+    window.CONSENTIMENTO = escolha;
     aplicar();
   }
 
@@ -108,17 +109,66 @@
     if (pixelCarregado && escolha.marketing)  window.fbq("consent", "grant");
   }
 
-  /* ---- EVENTO DE CONVERSÃO ----------------------------------------------- */
+  /* ---- EVENTOS DE CONVERSÃO --------------------------------------------- *
+   * Prontos para virar "conversão personalizada" no Gerenciador de Eventos.
+   *
+   *   Lead               formulário enviado (também vai pela API de Conversões)
+   *   Contact            clique em qualquer botão de WhatsApp
+   *   ViewContent        abriu um projeto do portfólio (content_name = cliente)
+   *   CliqueLink         (personalizado) clique em um card da bio ou rede social
+   *                      destino = texto do link, ex.: "Reset Mental"
+   *   CliqueSiteCliente  (personalizado) "Visitar site" de um projeto
+   *
+   * No GTM cada um chega no dataLayer como evento "meta_<nome>",
+   * e o lead também como "gerar_lead".
+   * -------------------------------------------------------------------- */
+
+  const PADRAO = ["Lead", "Contact", "ViewContent"];
+
+  function rastrear(nome, params, opcoes) {
+    params = params || {};
+    if (gtmCarregado) {
+      window.dataLayer.push(Object.assign({ event: "meta_" + nome }, params));
+    }
+    if (pixelCarregado && escolha && escolha.marketing) {
+      const extra = opcoes && opcoes.eventID ? { eventID: opcoes.eventID } : undefined;
+      const tipo = PADRAO.indexOf(nome) >= 0 ? "track" : "trackCustom";
+      window.fbq(tipo, nome, params, extra);
+    }
+  }
+  window.rastrear = rastrear;
 
   window.addEventListener("lead:enviado", (e) => {
     const d = e.detail || {};
     if (gtmCarregado) {
       window.dataLayer.push({ event: "gerar_lead", servico: d.servico || "", pagina: d.pagina || "" });
     }
-    if (pixelCarregado && escolha && escolha.marketing) {
-      window.fbq("track", "Lead", { content_name: d.servico || "" });
-    }
+    rastrear("Lead", {
+      content_name: d.servico || "",
+      investimento: d.investimento || "",
+      prazo: d.prazo || ""
+    }, { eventID: d.eventId });
   });
+
+  // Cliques: WhatsApp, cards da bio, redes e sites de clientes
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest("a");
+    if (!a) return;
+    const texto = (a.textContent || "").replace(/\s+/g, " ").trim()
+      || (a.querySelector("img") && a.querySelector("img").alt) || a.getAttribute("aria-label") || "";
+    const href = a.getAttribute("href") || "";
+
+    if (a.matches('[data-zap], a[href*="wa.me"]')) {
+      rastrear("Contact", { content_name: texto.slice(0, 60) });
+    } else if (a.closest(".bio-menu, .redes, .bio-rodape-redes")) {
+      // Card da bio: só o título ("Reset Mental"), sem a etiqueta nem a descrição
+      const titulo = a.querySelector(".bio-item-titulo");
+      const destino = titulo ? titulo.firstChild.textContent.trim() : texto;
+      rastrear("CliqueLink", { destino: destino.slice(0, 60) || href });
+    } else if (a.closest(".projeto, .lightbox") && /^https?:/.test(href) && a.host !== location.host) {
+      rastrear("CliqueSiteCliente", { destino: a.host });
+    }
+  }, true);
 
   /* ---- PAINEL ------------------------------------------------------------ */
 
@@ -201,6 +251,7 @@
 
   function iniciar() {
     escolha = lerEscolha();
+    window.CONSENTIMENTO = escolha;
     if (escolha) aplicar();
     else abrirPainel(false);
 

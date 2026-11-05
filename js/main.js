@@ -487,6 +487,9 @@
       // seletor continua lá para trocar.
       vista = window.matchMedia("(max-width: 767px)").matches ? "mobile" : "desktop";
       mostrar(i);
+      if (window.rastrear) {
+        window.rastrear("ViewContent", { content_name: DADOS.projetos[indice].cliente, content_category: "projeto" });
+      }
       caixa.hidden = false;
       // Força um frame antes da classe, para a transição acontecer
       requestAnimationFrame(() => caixa.classList.add("aberto"));
